@@ -11,7 +11,7 @@
 #define TOP_Y
 
 uint16_t t_x = 0, t_y = 0; //the touch coordinates
-boolean pressed = false; //true is valid press on the screen occured
+boolean pressed = false; //true if valid press on the screen occured
 boolean previousState = false;
 
 TFT_eSPI tft = TFT_eSPI();

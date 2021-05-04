@@ -13,7 +13,7 @@ Button::Button(uint16_t x, uint16_t y, int w, int h, const uint8_t* icon, int ic
     this->backgroundColor = backgroundColor;
     this->foregroundColor = foregroundColor;
     this->pressedColor = pressedColor;
-	this->tft = tft;
+	  this->tft = tft;
 }
 void Button::init() {
 	unPress();
