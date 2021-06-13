@@ -10,6 +10,8 @@
 #define TOP_X
 #define TOP_Y
 
+#define InterruptPin 27
+
 uint16_t t_x = 0, t_y = 0; //the touch coordinates
 boolean pressed = false; //true if valid press on the screen occured
 boolean previousState = false;
@@ -19,6 +21,9 @@ TFT_eSPI tft = TFT_eSPI();
 int pageNumber = 1;
 int currentPage = 0;
 int padding = tft.textWidth("99.9", 8);
+
+//Variables for radiation measurement
+int CPM = 0;
 
 static const uint8_t gear[2048] PROGMEM = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -157,6 +162,11 @@ void setup(){
   tft.init();
   tft.setRotation(2);
   touch_calibrate();
+
+  //ISR initialization
+  pinMode(InterruptPin, INPUT_PULLDOWN);
+  attachInterrupt(InterruptPin, countEvent, RISING);
+  
 }
 
 void loop(){
@@ -229,7 +239,7 @@ void updatePageOne(){
   tft.setTextDatum(TR_DATUM);
   tft.setTextColor(TFT_WHITE, TFT_SILVER);
   tft.setTextPadding(padding);
-  tft.drawFloat(10.0+random(0,10), 1, padding, 85, 8);
+  tft.drawFloat(CPM, 1, padding, 85, 8);
 }
 
 void updatePageTwo(){
@@ -253,12 +263,9 @@ void handleTouchPageTwo(){
   
 }
 
-/*void drawBitmapButton(uint16_t x, uint16_t y, int w, int h, const uint8_t* icon, int iconSX, int iconSY, int curve, int backgroundColor, int foregroundColor){
-
-  tft.fillRoundRect(x, y, w, h, curve, backgroundColor);
-  tft.drawBitmap(x, y, icon, iconSX, iconSY, foregroundColor);
-  
-}*/
+void countEvent(){
+  CPM++;
+}
 
 void touch_calibrate(){
   uint16_t calData[5];
